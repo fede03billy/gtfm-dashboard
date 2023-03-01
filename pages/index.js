@@ -37,7 +37,12 @@ export default function Home() {
         <div className="w-1/5">
           <Navbar setter={setSelection}></Navbar>
         </div>
-        {selection === 'ORDINI' && <div className="w-5/6">CONTENUZIO</div>}
+        <div className="w-5/6">
+          {selection === 'ORDINI' && <div>CONTENUZIO</div>}
+          {selection === 'MENU' && <div>MENU</div>}
+          {selection === 'PAGAMENTI' && <div>LINK AI PAGAMENTI STRIPE</div>}
+          {selection === 'SETTINGS' && <div>IMPOSTAZIE</div>}
+        </div>
       </main>
     </>
   );
