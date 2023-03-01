@@ -64,7 +64,7 @@ export default function Login() {
         />
         <button
           type="submit"
-          className="w-full p-2 my-2 text-white bg-blue-500 rounded"
+          className="w-full p-2 my-2 text-white bg-gray-500 rounded"
           disabled={isLoading}
         >
           {isLoading ? 'Loading...' : 'Login'}
