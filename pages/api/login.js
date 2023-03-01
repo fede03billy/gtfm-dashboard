@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   if (restaurantInfo && restaurantInfo.password === clearPassword) {
     // if they do, return a token
-    res.status(200).json({ gtfm_token: 'token' });
+    res.status(200).json({ gtfm_token: 'token' }); // TODO: generate token
   } else {
     // if they don't, return an error
     res.status(401).json({ error: 'Invalid credentials' });

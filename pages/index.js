@@ -3,9 +3,11 @@ import styles from '@/styles/Home.module.css';
 import Navbar from '../components/navbar';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function Home() {
   const router = useRouter();
+  const [selection, setSelection] = useState('ORDINI');
 
   useEffect(() => {
     // check if there's a token called gtfm_token in the cookies
@@ -33,9 +35,9 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className="w-1/5">
-          <Navbar></Navbar>
+          <Navbar setter={setSelection}></Navbar>
         </div>
-        <div className="w-5/6">CONTENUZIO</div>
+        {selection === 'ORDINI' && <div className="w-5/6">CONTENUZIO</div>}
       </main>
     </>
   );
