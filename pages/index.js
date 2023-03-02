@@ -4,6 +4,7 @@ import Navbar from '../components/navbar';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import hider from 'simple-hider';
 
 export default function Home() {
   const router = useRouter();
@@ -17,8 +18,13 @@ export default function Home() {
       typeof window !== 'undefined' &&
       document.cookie.includes('gtfm_token')
     ) {
-      console.log('token found');
-      // TODO: verify the token
+      //save the token in a variable, unhide it and parse it to JSON
+      let gtfm_token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('gtfm_token'))
+        .split('=')[1];
+      let restaurantInfo = JSON.parse(hider.unhide('precauzione', gtfm_token));
+      console.log(restaurantInfo);
     } else {
       console.log('token not found');
       router.push('/login');
