@@ -1,10 +1,13 @@
 // table component, this one will show the order for the specific table
 import { usePopupUpdate } from './popupContext';
+import { useTableUpdate } from './popupContext';
 
 export default function Table({ table }) {
   const togglePopup = usePopupUpdate();
+  const selectTable = useTableUpdate();
 
   function handleClick() {
+    selectTable(table);
     togglePopup();
   }
 

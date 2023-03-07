@@ -3,6 +3,9 @@
 // Path: pages/api/order/[restaurant_id].js
 
 import Order from '../../../models/order';
+import databaseConnection from '../../../util/databaseConnection';
+
+databaseConnection();
 
 export default async function handler(req, res) {
   const {

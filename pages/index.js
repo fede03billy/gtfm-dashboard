@@ -8,6 +8,7 @@ import { useState } from 'react';
 import hider from 'simple-hider';
 import { Dialog } from '@headlessui/react';
 import { usePopup, usePopupUpdate } from '../components/popupContext';
+import { useTable } from '../components/popupContext';
 
 export default function Home() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function Home() {
   const [restaurantInfo, setRestaurantInfo] = useState(null);
   const isOpen = usePopup(); // this one starts at undefined instead of false
   const togglePopup = usePopupUpdate(); // this one is a function that will toggle the isOpen state
-  const [table, setTable] = useState(null); // This one is to turn into a context to let the table component have a button to open the modal and to let the modal know which table it has been opened for
+  const table = useTable();
   const [orders, setOrders] = useState(null); // Array of orders that must be updated in real time. The data structure will be decided later but something like this is to be expected: {_id, table_id, ordered_food: Array of simplified food objects, total_price, paid, done }
 
   async function getOrders() {
@@ -94,6 +95,7 @@ export default function Home() {
               <p>CIBO</p>
               {orders &&
                 orders.map((order, i) => {
+                  if (order.table_id !== table) return;
                   return (
                     <div key={i}>
                       <p key={i}>{order.ordered_food}</p>
