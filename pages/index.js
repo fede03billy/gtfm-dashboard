@@ -6,11 +6,29 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import hider from 'simple-hider';
+import { Dialog } from '@headlessui/react';
 
 export default function Home() {
   const router = useRouter();
   const [selection, setSelection] = useState('ORDINI');
   const [restaurantInfo, setRestaurantInfo] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
+  const [orders, setOrders] = useState(null);
+
+  async function getOrders() {
+    // call api to get the orders for the specific restaurant
+    if (!restaurantInfo) return;
+    await fetch(`/api/order/${restaurantInfo._id}`).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          setOrders(data);
+          return data;
+        });
+      } else {
+        console.error('error');
+      }
+    });
+  }
 
   useEffect(() => {
     // check if there's a token called gtfm_token in the cookies
@@ -27,11 +45,18 @@ export default function Home() {
         .split('=')[1];
       setRestaurantInfo(JSON.parse(hider.unhide('precauzione', gtfm_token)));
       // all of this logic is in the useEffect cause it needs to be executed after the page is on the client and the window & document objects are available
+      // TODO: implement a fallback for when the data is not properly formatted or some info is missing
     } else {
       console.error('token not found');
       router.push('/login');
     }
   }, []);
+
+  useEffect(() => {
+    if (!restaurantInfo) return;
+    // call api to get the orders for the specific restaurant
+    getOrders();
+  }, [restaurantInfo, orders]);
 
   return (
     <>
@@ -53,6 +78,35 @@ export default function Home() {
           {selection === 'PAGAMENTI' && <div>LINK AI PAGAMENTI STRIPE</div>}
           {selection === 'SETTINGS' && <div>IMPOSTAZIE</div>}
         </div>
+        <Dialog
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          className="relative z-50"
+        >
+          <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/[0.4]">
+            <Dialog.Panel className="w-full max-w-sm rounded bg-gray-200 p-4">
+              <Dialog.Title>Ordine del tavolo</Dialog.Title>
+              <Dialog.Description>Ecco l'ordine del tavolo</Dialog.Description>
+
+              <p>CIBO</p>
+              {orders &&
+                orders.map((order, i) => {
+                  return (
+                    <div key={i}>
+                      <p key={i}>{order.ordered_food}</p>
+                    </div>
+                  );
+                })}
+
+              <button
+                onClick={() => setIsOpen(false)}
+                className="bg-gray-300 py-2 px-4 rounded shadow hover:bg-gray-400 mr-1"
+              >
+                Chiudi
+              </button>
+            </Dialog.Panel>
+          </div>
+        </Dialog>
       </main>
     </>
   );
