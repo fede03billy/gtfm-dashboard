@@ -7,13 +7,16 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import hider from 'simple-hider';
 import { Dialog } from '@headlessui/react';
+import { usePopup, usePopupUpdate } from '../components/popupContext';
 
 export default function Home() {
   const router = useRouter();
   const [selection, setSelection] = useState('ORDINI');
   const [restaurantInfo, setRestaurantInfo] = useState(null);
-  const [isOpen, setIsOpen] = useState(true);
-  const [orders, setOrders] = useState(null);
+  const isOpen = usePopup(); // this one starts at undefined instead of false
+  const togglePopup = usePopupUpdate(); // this one is a function that will toggle the isOpen state
+  const [table, setTable] = useState(null); // This one is to turn into a context to let the table component have a button to open the modal and to let the modal know which table it has been opened for
+  const [orders, setOrders] = useState(null); // Array of orders that must be updated in real time. The data structure will be decided later but something like this is to be expected: {_id, table_id, ordered_food: Array of simplified food objects, total_price, paid, done }
 
   async function getOrders() {
     // call api to get the orders for the specific restaurant
@@ -80,7 +83,7 @@ export default function Home() {
         </div>
         <Dialog
           open={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => togglePopup()}
           className="relative z-50"
         >
           <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/[0.4]">
@@ -99,7 +102,7 @@ export default function Home() {
                 })}
 
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => togglePopup()}
                 className="bg-gray-300 py-2 px-4 rounded shadow hover:bg-gray-400 mr-1"
               >
                 Chiudi
