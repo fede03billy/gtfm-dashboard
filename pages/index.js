@@ -9,7 +9,7 @@ import hider from 'simple-hider';
 import { Dialog } from '@headlessui/react';
 import { usePopup, usePopupUpdate } from '../components/popupContext';
 import { useTable } from '../components/popupContext';
-// import { io } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 export default function Home() {
   const router = useRouter();
@@ -19,30 +19,29 @@ export default function Home() {
   const togglePopup = usePopupUpdate(); // this one is a function that will toggle the isOpen state
   const table = useTable();
   const [orders, setOrders] = useState(null); // Array of orders that must be updated in real time. The data structure will be decided later but something like this is to be expected: {_id, table_id, ordered_food: Array of simplified food objects, total_price, paid, done }
+  let socket;
 
-  // TODO: make this real time with the socket connection and not by continuos re-rendering
-  // let socket;
+  const socketInitializer = async () => {
+    if (!restaurantInfo) return;
+    await fetch('/api/order');
+    socket = io();
+    socket.on('connect', () => {
+      console.log('Connessione al server real-time effettuata.');
+    });
+    socket.on('change', (data) => {
+      console.log('Evento registrato: ', data.operationType);
+      getOrders();
+    });
+  };
 
-  // const socketInitializer = async () => {
-  //   await fetch('/api/order');
-  //   socket = io();
-  //   socket.on('connect', () => {
-  //     console.log('Connessione al server real-time effettuata.');
-  //   });
-  //   socket.on('change', (data) => {
-  //     console.log('change received');
-  //     console.log(data);
-  //     // getOrders(); // no need to call the getOrders function since there's another useEffect that will do it on each orders change
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   socketInitializer();
-  // }, []);
+  useEffect(() => {
+    socketInitializer();
+  }, []);
 
   async function getOrders() {
     // call api to get the orders for the specific restaurant
     if (!restaurantInfo) return;
+    console.log('Sto recuperando gli ordini...');
     await fetch(`/api/order/${restaurantInfo._id}`).then((res) => {
       if (res.ok) {
         res.json().then((data) => {
@@ -78,10 +77,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    // this useEffect initialize the orders array once the restaurantInfo is available
     if (!restaurantInfo) return;
     // call api to get the orders for the specific restaurant
     getOrders();
-  }, [restaurantInfo, orders]); // this stuff is a continuous re-rendering of the page, it's not real time (bad for performance)
+  }, [restaurantInfo]);
 
   return (
     <>
