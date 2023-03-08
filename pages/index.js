@@ -2,6 +2,7 @@ import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
 import Navbar from '../components/navbar';
 import Orders from '../components/order';
+import OrderItem from '../components/orderItem.js';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -21,31 +22,15 @@ export default function Home() {
   const [orders, setOrders] = useState(null); // Array of orders that must be updated in real time. The data structure will be decided later but something like this is to be expected: {_id, table_id, ordered_food: Array of simplified food objects, total_price, paid, done }
   let socket;
 
-  const socketInitializer = async () => {
-    if (!restaurantInfo) return;
-    await fetch('/api/order');
-    socket = io();
-    socket.on('connect', () => {
-      console.log('Connessione al server real-time effettuata.');
-    });
-    socket.on('change', (data) => {
-      console.log('Evento registrato: ', data.operationType);
-      getOrders();
-    });
-  };
-
-  useEffect(() => {
-    socketInitializer();
-  }, []);
-
   async function getOrders() {
     // call api to get the orders for the specific restaurant
     if (!restaurantInfo) return;
-    console.log('Sto recuperando gli ordini...');
+    console.info('Sto recuperando gli ordini...');
     await fetch(`/api/order/${restaurantInfo._id}`).then((res) => {
       if (res.ok) {
         res.json().then((data) => {
           setOrders(data);
+          console.info('Ordini recuperati con successo.');
           return data;
         });
       } else {
@@ -53,6 +38,30 @@ export default function Home() {
       }
     });
   }
+
+  const socketInitializer = async () => {
+    // connect to the socket
+    await fetch('/api/order');
+    socket = io();
+    socket.on('connect', () => {
+      console.info('Connessione al server real-time effettuata.');
+      console.info('Socket ID: ', socket.id);
+      console.info('Restaurant ID: ', restaurantInfo?._id);
+    });
+    socket.on('change', (data) => {
+      // console.log('Evento registrato: ', data.operationType);
+      getOrders();
+    });
+    socket.on('reconnect_attempt', () => {
+      console.info('Riconnessione al server real-time in corso...');
+    });
+    socket.on('reconnect', () => {
+      console.info('Riconnessione al server real-time effettuata.');
+    });
+    socket.on('disconnect', () => {
+      console.info('Connessione al server real-time persa.');
+    });
+  };
 
   useEffect(() => {
     // check if there's a token called gtfm_token in the cookies
@@ -63,15 +72,17 @@ export default function Home() {
       document.cookie.includes('gtfm_token')
     ) {
       //save the token in a variable, unhide it and parse it to JSON
+      console.info('Recupero token di login in corso...');
       let gtfm_token = document.cookie
         .split('; ')
         .find((row) => row.startsWith('gtfm_token'))
         .split('=')[1];
       setRestaurantInfo(JSON.parse(hider.unhide('precauzione', gtfm_token)));
+      console.info('Token di login recuperato con successo.');
       // all of this logic is in the useEffect cause it needs to be executed after the page is on the client and the window & document objects are available
       // TODO: implement a fallback for when the data is not properly formatted or some info is missing
     } else {
-      console.error('token not found');
+      console.error('Effettuare il login per accedere alla dashboard.');
       router.push('/login');
     }
   }, []);
@@ -81,7 +92,14 @@ export default function Home() {
     if (!restaurantInfo) return;
     // call api to get the orders for the specific restaurant
     getOrders();
+    // initialize the socket
+    socketInitializer();
   }, [restaurantInfo]);
+
+  useEffect(() => {
+    // this useEffect will update (re-render) the orders array every time a new order is added
+    console.log('Ordini aggiornati: ', orders);
+  }, [orders]);
 
   return (
     <>
@@ -118,9 +136,13 @@ export default function Home() {
                 orders.map((order, i) => {
                   if (order.table_id !== table) return;
                   return (
-                    <div key={i}>
-                      <p key={i}>{order.ordered_food}</p>
-                    </div>
+                    <OrderItem
+                      key={i}
+                      ordered_food={order.ordered_food}
+                      total_price={order.total_price}
+                      paid={order.paid}
+                      order_id={order._id}
+                    />
                   );
                 })}
 
