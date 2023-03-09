@@ -17,12 +17,15 @@ export default async function handler(req, res) {
       io.on('connection', (socket) => {
         console.log('Client connected');
         console.info('Socket ID: ', socket.id);
-      });
-      // listen to changes in the database
-      Order.watch().on('change', (data) => {
-        console.log('Evento registrato: ', data.operationType);
-        // send the changes to the client
-        io.emit('change', data);
+        // listen to changes in the database
+        Order.watch().on('change', (data) => {
+          console.log('Evento registrato: ', data.operationType);
+          // send the changes to the client
+          io.emit('change', data);
+        });
+        socket.on('event-received', () =>
+          console.log('Evento ricevuto dalla Dashboard.')
+        );
       });
     } catch (error) {
       console.error(error);

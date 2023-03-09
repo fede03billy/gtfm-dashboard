@@ -47,19 +47,20 @@ export default function Home() {
       console.info('Connessione al server real-time effettuata.');
       console.info('Socket ID: ', socket.id);
       console.info('Restaurant ID: ', restaurantInfo?._id);
-    });
-    socket.on('change', (data) => {
-      // console.log('Evento registrato: ', data.operationType);
-      getOrders();
-    });
-    socket.on('reconnect_attempt', () => {
-      console.info('Riconnessione al server real-time in corso...');
-    });
-    socket.on('reconnect', () => {
-      console.info('Riconnessione al server real-time effettuata.');
-    });
-    socket.on('disconnect', () => {
-      console.info('Connessione al server real-time persa.');
+      socket.on('change', (data) => {
+        // console.log('Evento registrato: ', data.operationType);
+        getOrders();
+        socket.emit('event-received');
+      });
+      socket.on('reconnect_attempt', () => {
+        console.info('Riconnessione al server real-time in corso...');
+      });
+      socket.on('reconnect', () => {
+        console.info('Riconnessione al server real-time effettuata.');
+      });
+      socket.on('disconnect', () => {
+        console.info('Connessione al server real-time persa.');
+      });
     });
   };
 
