@@ -128,11 +128,11 @@ export default function Home() {
           className="relative z-50"
         >
           <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/[0.4]">
-            <Dialog.Panel className="w-full max-w-sm rounded bg-gray-200 p-4">
-              <Dialog.Title>Ordine del tavolo</Dialog.Title>
-              <Dialog.Description>Ecco l'ordine del tavolo</Dialog.Description>
-
-              <p>CIBO</p>
+            <Dialog.Panel className="w-full max-w-4xl rounded bg-gray-200 p-4">
+              <Dialog.Title>Ordine del tavolo {table}</Dialog.Title>
+              <Dialog.Description>
+                Ecco cosa è stato ordinato:
+              </Dialog.Description>
               {orders &&
                 orders.map((order, i) => {
                   if (order.table_id !== table) return;
@@ -149,7 +149,7 @@ export default function Home() {
 
               <button
                 onClick={() => togglePopup()}
-                className="bg-gray-300 py-2 px-4 rounded shadow hover:bg-gray-400 mr-1"
+                className="bg-gray-300 py-2 px-4 rounded shadow hover:bg-gray-400 mr-1 w-full max-w-xs"
               >
                 Chiudi
               </button>

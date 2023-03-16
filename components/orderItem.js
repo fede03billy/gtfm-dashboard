@@ -27,7 +27,7 @@ export default function OrderItem({
   }
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-md shadow-md">
+    <div className="flex flex-col w-full bg-white rounded-md shadow-md my-2">
       <div className="flex flex-col justify-between p-5">
         {ordered_food &&
           ordered_food.map((food, i) => {
@@ -38,29 +38,30 @@ export default function OrderItem({
               </div>
             );
           })}
-        <div className="flex flex-col">
-          <div className="text-lg font-bold">
-            € {(total_price / 100).toFixed(2)}
+        <div className="flex flex-col items-center">
+          <div className="flex flex-row w-full justify-center">
+            <div className="text-lg font-bold">
+              € {(total_price / 100).toFixed(2)}
+            </div>
+            <div className="text-sm text-gray-500">
+              {paid ? 'Pagato' : 'Non pagato'}
+            </div>
           </div>
-          <div className="text-sm text-gray-500">
-            {paid ? 'Pagato' : 'Non pagato'}
+          <div className="flex gap-4 mt-4 w-full justify-center">
+            <button
+              onClick={paidOrder}
+              className="w-full max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
+            >
+              Segna come pagato
+            </button>
+            <button
+              onClick={completedOrder}
+              className="w-full max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
+            >
+              Segna come completato
+            </button>
           </div>
-          <button
-            onClick={paidOrder}
-            className="text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
-          >
-            Segna come pagato
-          </button>
-          <button
-            onClick={completedOrder}
-            className="text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
-          >
-            Segna come completato
-          </button>
         </div>
-      </div>
-      <div className="flex flex-row justify-between p-5">
-        <div className="flex flex-col"></div>
       </div>
     </div>
   );
