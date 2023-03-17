@@ -11,6 +11,7 @@ import { Dialog } from '@headlessui/react';
 import { usePopup, usePopupUpdate } from '../components/popupContext';
 import { useTable } from '../components/popupContext';
 import { io } from 'socket.io-client';
+import { getCookie, hasCookie } from 'cookies-next';
 
 export default function Home() {
   const router = useRouter();
@@ -64,21 +65,34 @@ export default function Home() {
     });
   };
 
+  async function retrieveRestaurantInfo(restaurant_id) {
+    // remove the quotes from the restaurant_id
+    restaurant_id = restaurant_id.replace(/"/g, '');
+    // call api to get the restaurant info
+    console.info('Sto recuperando le informazioni del ristorante...');
+    await fetch(`/api/restaurant/${restaurant_id}`).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          const { restaurant } = data;
+          setRestaurantInfo(restaurant);
+          console.info('Informazioni del ristorante recuperate con successo.');
+          return data;
+        });
+      } else {
+        console.error('Errore nel recupero delle informazioni del ristorante.');
+      }
+    });
+  }
+
   useEffect(() => {
     // check if there's a token called gtfm_token in the cookies
     // if there is, render the dashboard
     // if there isn't, render the login page
-    if (
-      typeof window !== 'undefined' &&
-      document.cookie.includes('gtfm_token')
-    ) {
+    if (typeof window !== 'undefined' && hasCookie('gtfm_token')) {
       //save the token in a variable, unhide it and parse it to JSON
       console.info('Recupero token di login in corso...');
-      let gtfm_token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('gtfm_token'))
-        .split('=')[1];
-      setRestaurantInfo(JSON.parse(hider.unhide('precauzione', gtfm_token)));
+      let gtfm_token = getCookie('gtfm_token');
+      retrieveRestaurantInfo(hider.unhide('precauzione', gtfm_token));
       console.info('Token di login recuperato con successo.');
       // all of this logic is in the useEffect cause it needs to be executed after the page is on the client and the window & document objects are available
       // TODO: implement a fallback for when the data is not properly formatted or some info is missing
@@ -97,10 +111,10 @@ export default function Home() {
     socketInitializer();
   }, [restaurantInfo]);
 
-  useEffect(() => {
-    // this useEffect will update (re-render) the orders array every time a new order is added
-    console.log('Ordini aggiornati: ', orders);
-  }, [orders]);
+  // useEffect(() => {
+  //   // this useEffect will update (re-render) the orders array every time a new order is added
+  //   console.log('Ordini aggiornati: ', orders);
+  // }, [orders]);
 
   return (
     <>

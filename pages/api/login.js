@@ -15,7 +15,10 @@ export default async function handler(req, res) {
   if (restaurantInfo && restaurantInfo.password === clearPassword) {
     // if they do, return a token
     // generate the token stringyfing the restaurantInfo object and cyphering it with
-    let gtfm_token = hider.hide('precauzione', JSON.stringify(restaurantInfo));
+    let gtfm_token = hider.hide(
+      'precauzione',
+      JSON.stringify(restaurantInfo._id)
+    );
     res.status(200).json({ gtfm_token });
   } else {
     // if they don't, return an error

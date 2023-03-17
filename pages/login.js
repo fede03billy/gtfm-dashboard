@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import hider from 'simple-hider';
+import { getCookie, setCookie } from 'cookies-next';
 
 export default function Login() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function Login() {
         } else {
           setIsLoading(false);
           const { gtfm_token } = data;
-          document.cookie = `gtfm_token=${gtfm_token}`;
+          setCookie('gtfm_token', gtfm_token);
           router.push('/');
         }
       });
