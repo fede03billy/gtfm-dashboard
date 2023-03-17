@@ -8,7 +8,7 @@ export default function Orders({ tables, orders }) {
     let hasUndelivered = false;
     let hasUnpaid = false;
     let hasOrders = false;
-
+    if (!orders) return 'bg-gray-200';
     orders.forEach((order) => {
       if (order.table_id === table) {
         hasOrders = true;
@@ -35,12 +35,13 @@ export default function Orders({ tables, orders }) {
 
   return (
     <div className="flex flex-row flex-wrap p-20 h-full">
-      {tables.map((table) => {
-        // go through the orders and check if there are orders for the specific table, if yes we pass a color to the table component
-        if (!orders) return <Table key={table} table={table} color={color} />;
-        const color = getColorForTable(orders, table);
-        return <Table key={table} table={table} color={color} />;
-      })}
+      {tables &&
+        tables.map((table) => {
+          // go through the orders and check if there are orders for the specific table, if yes we pass a color to the table component
+          const color = getColorForTable(orders, table);
+          if (!orders) return <Table key={table} table={table} color={color} />;
+          return <Table key={table} table={table} color={color} />;
+        })}
     </div>
   );
 }
