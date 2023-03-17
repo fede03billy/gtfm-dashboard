@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import hider from 'simple-hider';
-import { getCookie, setCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next';
 
 export default function Login() {
   const router = useRouter();

@@ -5,7 +5,7 @@ import Table from './table';
 
 export default function Orders({ tables }) {
   return (
-    <div className="flex flex-row flex-wrap py-24 px-24 h-full">
+    <div className="flex flex-row flex-wrap p-20 h-full">
       {tables.map((table) => (
         <Table key={table} table={table} />
       ))}
