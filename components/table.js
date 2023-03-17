@@ -2,7 +2,7 @@
 import { usePopupUpdate } from './popupContext';
 import { useTableUpdate } from './popupContext';
 
-export default function Table({ table }) {
+export default function Table({ table, color }) {
   const togglePopup = usePopupUpdate();
   const selectTable = useTableUpdate();
 
@@ -11,11 +11,10 @@ export default function Table({ table }) {
     togglePopup();
   }
 
+  const classContent = `h-32 w-32 m-4 rounded-md ${color}`;
+
   return (
-    <div
-      onClick={handleClick}
-      className="h-32 w-32 m-4 bg-slate-600 rounded-md"
-    >
+    <div onClick={handleClick} className={classContent}>
       {table}
     </div>
   );

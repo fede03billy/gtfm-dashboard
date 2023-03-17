@@ -11,7 +11,7 @@ import { Dialog } from '@headlessui/react';
 import { usePopup, usePopupUpdate } from '../components/popupContext';
 import { useTable } from '../components/popupContext';
 import { io } from 'socket.io-client';
-import { getCookie, hasCookie } from 'cookies-next';
+import { getCookie, hasCookie } from 'cookies-next'; // does this work only on node 18?
 
 export default function Home() {
   const router = useRouter();
@@ -130,7 +130,7 @@ export default function Home() {
         </div>
         <div className="w-5/6 h-screen">
           {selection === 'ORDINI' && restaurantInfo && (
-            <Orders tables={restaurantInfo.tables}></Orders>
+            <Orders tables={restaurantInfo.tables} orders={orders}></Orders>
           )}
           {selection === 'MENU' && <div>MENU</div>}
           {selection === 'PAGAMENTI' && <div>LINK AI PAGAMENTI STRIPE</div>}
