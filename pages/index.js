@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
 import Navbar from '../components/navbar';
+import ConnectionStatus from '../components/connectionStatus';
 import Orders from '../components/order';
 import OrderItem from '../components/orderItem.js';
 import { useEffect } from 'react';
@@ -15,12 +16,13 @@ import { getCookie, hasCookie } from 'cookies-next'; // does this work only on n
 
 export default function Home() {
   const router = useRouter();
-  const [selection, setSelection] = useState('ORDINI');
-  const [restaurantInfo, setRestaurantInfo] = useState(null);
+  const [selection, setSelection] = useState('ORDINI'); // handles the navbar menu selection
+  const [restaurantInfo, setRestaurantInfo] = useState(null); // this state holds the restaurant info
   const isOpen = usePopup(); // this one starts at undefined instead of false
   const togglePopup = usePopupUpdate(); // this one is a function that will toggle the isOpen state
   const table = useTable();
-  const [orders, setOrders] = useState(null); // Array of orders that must be updated in real time. The data structure will be decided later but something like this is to be expected: {_id, table_id, ordered_food: Array of simplified food objects, total_price, paid, done }
+  const [orders, setOrders] = useState(null); // Array of orders that must be updated in real time.
+  const [isConnected, setIsConnected] = useState(false); // this state will be used to show the ws connection status
   let socket;
 
   async function getOrders() {
@@ -48,6 +50,7 @@ export default function Home() {
       console.info('Connessione al server real-time effettuata.');
       console.info('Socket ID: ', socket.id);
       console.info('Restaurant ID: ', restaurantInfo?._id);
+      setIsConnected(true);
       socket.on('change', (data) => {
         // console.log('Evento registrato: ', data.operationType);
         getOrders();
@@ -60,6 +63,7 @@ export default function Home() {
         console.info('Riconnessione al server real-time effettuata.');
       });
       socket.on('disconnect', () => {
+        setIsConnected(false);
         console.info('Connessione al server real-time persa.');
       });
     });
@@ -136,6 +140,7 @@ export default function Home() {
           {selection === 'PAGAMENTI' && <div>LINK AI PAGAMENTI STRIPE</div>}
           {selection === 'SETTINGS' && <div>IMPOSTAZIE</div>}
         </div>
+        {selection === 'ORDINI' && <ConnectionStatus status={isConnected} />}
         <Dialog
           open={isOpen}
           onClose={() => togglePopup()}
