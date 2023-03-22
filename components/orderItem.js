@@ -4,12 +4,12 @@
 
 import normalizeFood from '../util/normalizeFood';
 
-export default function OrderItem({
-  ordered_food,
-  total_price,
-  paid,
-  order_id,
-}) {
+export default function OrderItem({ order }) {
+  const ordered_food = order.ordered_food;
+  const total_price = order.total_price;
+  const paid = order.paid;
+  const order_id = order._id;
+
   async function deliveredOrder() {
     const res = await fetch(`/api/order/delivered/${order_id}`);
     const data = await res.json();
@@ -34,47 +34,77 @@ export default function OrderItem({
     }
   }
 
+  // function to modify the ordered food array to add the quantity of each item and removing the duplicates
+  function prepareOrder(ordered_food) {
+    const modifiedList = [];
+    ordered_food.forEach((item) => {
+      item = normalizeFood(item);
+      const index = modifiedList.findIndex(
+        (cartItem) => cartItem._id === item._id
+      );
+      if (index === -1) {
+        modifiedList.push({ ...item, quantity: 1 });
+      } else {
+        modifiedList[index].quantity++;
+      }
+    });
+    return modifiedList;
+  }
+
+  const modifiedList = prepareOrder(ordered_food);
+
   return (
     <div className="flex flex-col w-full bg-white rounded-md shadow-md my-2">
-      <div className="flex flex-col justify-between p-5">
-        {ordered_food &&
-          ordered_food.map((food, i) => {
-            food = normalizeFood(food);
-            return (
-              <div key={i} className="flex flex-col justify-between">
-                {food?.name} - € {(food?.price / 100).toFixed(2)}
-              </div>
-            );
-          })}
-        <div className="flex flex-col items-center">
-          <div className="flex flex-row w-full justify-center">
-            <div className="text-lg font-bold">
-              € {(total_price / 100).toFixed(2)}
-            </div>
-            <div className="text-sm text-gray-500">
-              {paid ? 'Pagato' : 'Non pagato'}
-            </div>
-          </div>
-          <div className="flex gap-4 mt-4 w-full justify-center">
-            <button
-              onClick={deliveredOrder}
-              className="w-full max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
-            >
-              Segna come consegnato
-            </button>
-            <button
-              onClick={paidOrder}
-              className="w-full max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
-            >
-              Segna come pagato
-            </button>
-            <button
-              onClick={completedOrder}
-              className="w-full max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
-            >
-              Segna come completato
-            </button>
-          </div>
+      <div className="flex flex-row justify-between p-5 w-full">
+        <div className="timestamp max-h-20 aspect-square">
+          {new Date(order.created_at).toLocaleString()}
+        </div>
+        <div className="flex flex-col">
+          {ordered_food &&
+            modifiedList &&
+            modifiedList.map((food, i) => {
+              // food = normalizeFood(food);
+              return (
+                <div key={i} className="flex flex-col justify-between">
+                  {food?.name} - {food?.quantity} - €{' '}
+                  {((food?.quantity * food?.price) / 100).toFixed(2)}
+                </div>
+              );
+            })}
+        </div>
+        <div className="text-lg font-bold">
+          € {(total_price / 100).toFixed(2)}
+        </div>
+        <div className="status text-sm text-gray-500">
+          {order.delivered
+            ? paid
+              ? 'Pagato'
+              : 'Non pagato'
+            : 'Non consegnato'}
+          {/* TODO: change the text status with a colored dot */}
+        </div>
+        <div className="flex gap-4 justify-center">
+          {/* TODO: disabled button do not have a style, they just don't work and that's fine, but it might be cool to give them some opacity or similar solutions */}
+          <button
+            onClick={deliveredOrder}
+            disabled={order.delivered}
+            className="w-xs max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4 aspect-square max-h-20"
+          >
+            Segna come consegnato
+          </button>
+          <button
+            onClick={paidOrder}
+            disabled={paid}
+            className="w-xs max-h-xs max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4 aspect-square max-h-20"
+          >
+            Segna come pagato
+          </button>
+          <button
+            onClick={completedOrder}
+            className="w-xs max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4 aspect-square max-h-20"
+          >
+            Segna come completato
+          </button>
         </div>
       </div>
     </div>

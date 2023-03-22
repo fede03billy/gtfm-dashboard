@@ -155,15 +155,7 @@ export default function Home() {
               {orders &&
                 orders.map((order, i) => {
                   if (order.table_id !== table) return;
-                  return (
-                    <OrderItem
-                      key={i}
-                      ordered_food={order.ordered_food}
-                      total_price={order.total_price}
-                      paid={order.paid}
-                      order_id={order._id}
-                    />
-                  );
+                  return <OrderItem key={i} order={order} />;
                 })}
 
               <button
