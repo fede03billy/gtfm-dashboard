@@ -10,6 +10,14 @@ export default function OrderItem({
   paid,
   order_id,
 }) {
+  async function deliveredOrder() {
+    const res = await fetch(`/api/order/delivered/${order_id}`);
+    const data = await res.json();
+    if (data.success) {
+      console.info('Ordine contrassegnato come consegnato.');
+    }
+  }
+
   async function paidOrder() {
     const res = await fetch(`/api/order/paid/${order_id}`);
     const data = await res.json();
@@ -48,6 +56,12 @@ export default function OrderItem({
             </div>
           </div>
           <div className="flex gap-4 mt-4 w-full justify-center">
+            <button
+              onClick={deliveredOrder}
+              className="w-full max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
+            >
+              Segna come consegnato
+            </button>
             <button
               onClick={paidOrder}
               className="w-full max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4"
