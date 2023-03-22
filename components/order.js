@@ -2,8 +2,18 @@
 
 import React from 'react';
 import Table from './table';
+import Delivered from './delivered.js';
+import Paid from './paid.js';
+import ConnectionStatus from './connectionStatus.js';
+import OrderItem from './orderItem.js';
 
-export default function Orders({ tables, orders }) {
+export default function Orders({ tables, orders, isConnected }) {
+  const [switchView, setSwitchView] = React.useState(false);
+
+  function toggleSwitchView() {
+    setSwitchView(!switchView);
+  }
+
   function getColorForTable(orders, table) {
     let hasUndelivered = false;
     let hasUnpaid = false;
@@ -34,14 +44,39 @@ export default function Orders({ tables, orders }) {
   }
 
   return (
-    <div className="flex flex-row flex-wrap p-20 h-full">
-      {tables &&
-        tables.map((table) => {
-          // go through the orders and check if there are orders for the specific table, if yes we pass a color to the table component
-          const color = getColorForTable(orders, table);
-          if (!orders) return <Table key={table} table={table} color={color} />;
-          return <Table key={table} table={table} color={color} />;
-        })}
-    </div>
+    <>
+      {orders && (
+        <div className="flex flex-row absolute top-0 right-0 max-h-16 overflow-hidden">
+          <button
+            className="rounded bg-gray-500 text-xs m-2 p-2 text-white"
+            onClick={toggleSwitchView}
+          >
+            Cambia visuale
+          </button>
+          <Delivered orders={orders} />
+          <Paid orders={orders} />
+          <ConnectionStatus status={isConnected} />
+        </div>
+      )}
+      <div className="flex flex-row flex-wrap p-20 h-full">
+        {!switchView ? (
+          tables &&
+          tables.map((table) => {
+            // go through the orders and check if there are orders for the specific table, if yes we pass a color to the table component
+            const color = getColorForTable(orders, table);
+            if (!orders)
+              return <Table key={table} table={table} color={color} />;
+            return <Table key={table} table={table} color={color} />;
+          })
+        ) : (
+          <>
+            {orders &&
+              orders.map((order) => {
+                return <OrderItem key={order._id} order={order} />;
+              })}
+          </>
+        )}
+      </div>
+    </>
   );
 }
