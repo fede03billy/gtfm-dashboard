@@ -2,6 +2,11 @@
 import mongoose from 'mongoose';
 
 export default async function databaseConnection() {
+  // check if we have already connected to the database
+  if (mongoose.connections[0].readyState) {
+    // use current db connection
+    return;
+  }
   mongoose
     .connect(process.env.MONGODB_URI, {
       useUnifiedTopology: true,
