@@ -72,7 +72,12 @@ export default function Orders({ tables, orders, isConnected }) {
           <>
             {orders &&
               orders.map((order) => {
-                return <OrderItem key={order._id} order={order} />;
+                return (
+                  <div className="flex flex-row">
+                    <div>{order.table_id}</div>
+                    <OrderItem key={order._id} order={order} />
+                  </div>
+                );
               })}
           </>
         )}
