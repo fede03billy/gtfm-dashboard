@@ -19,6 +19,9 @@ export default function Navbar({ setter }) {
           PAGAMENTI
         </div>
         <div className="text-xl text-gray-500" onClick={handleClick}>
+          STATISTICHE
+        </div>
+        <div className="text-xl text-gray-500" onClick={handleClick}>
           SETTINGS
         </div>
       </div>

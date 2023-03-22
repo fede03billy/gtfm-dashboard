@@ -28,7 +28,7 @@ export default function ConnectionStatus({ status }) {
   }, [status]);
 
   return (
-    <div className="flex justify-center items-center p-2 connection-status border max-w-15 absolute top-0 right-0 aspect-square">
+    <div className="flex justify-center items-center p-2 connection-status border">
       {/* <div className="connection-status__icon">
             {isConnected ? (
             <img src="/connected.svg" alt="connected" />

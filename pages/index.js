@@ -4,6 +4,8 @@ import Navbar from '../components/navbar';
 import ConnectionStatus from '../components/connectionStatus';
 import Orders from '../components/order';
 import OrderItem from '../components/orderItem.js';
+import Delivered from '../components/delivered.js';
+import Paid from '../components/paid.js';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -138,9 +140,19 @@ export default function Home() {
           )}
           {selection === 'MENU' && <div>MENU</div>}
           {selection === 'PAGAMENTI' && <div>LINK AI PAGAMENTI STRIPE</div>}
+          {selection === 'STATISTICHE' && <div>STATISTICHE</div>}
           {selection === 'SETTINGS' && <div>IMPOSTAZIE</div>}
         </div>
-        {selection === 'ORDINI' && <ConnectionStatus status={isConnected} />}
+        {selection === 'ORDINI' && orders && (
+          <div className="flex flex-row absolute top-0 right-0 max-h-16 overflow-hidden">
+            <button className="rounded bg-gray-500 text-xs m-2 p-2 text-white">
+              Cambia visuale
+            </button>
+            <Delivered orders={orders} />
+            <Paid orders={orders} />
+            <ConnectionStatus status={isConnected} />
+          </div>
+        )}
         <Dialog
           open={isOpen}
           onClose={() => togglePopup()}
