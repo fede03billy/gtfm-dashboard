@@ -152,12 +152,13 @@ export default function Home() {
               <Dialog.Description>
                 Ecco cosa è stato ordinato:
               </Dialog.Description>
-              {orders &&
-                orders.map((order, i) => {
-                  if (order.table_id !== table) return;
-                  return <OrderItem key={i} order={order} />;
-                })}
-
+              <div className="overflow-y-auto" style={{ maxHeight: '70vh' }}>
+                {orders &&
+                  orders.map((order, i) => {
+                    if (order.table_id !== table) return;
+                    return <OrderItem key={i} order={order} />;
+                  })}
+              </div>
               <button
                 onClick={() => togglePopup()}
                 className="bg-gray-300 py-2 px-4 rounded shadow hover:bg-gray-400 mr-1 w-full max-w-xs"

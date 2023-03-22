@@ -25,10 +25,10 @@ export default function Orders({ tables, orders }) {
       return 'bg-gray-200';
     }
     if (hasUndelivered) {
-      return 'bg-yellow-200';
+      return 'bg-red-200';
     }
     if (hasUnpaid) {
-      return 'bg-red-200';
+      return 'bg-yellow-200';
     }
     return 'bg-green-200';
   }
