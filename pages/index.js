@@ -2,6 +2,7 @@ import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
 import Navbar from '../components/navbar';
 import Orders from '../components/order';
+import Menu from '../components/menu';
 import OrderItem from '../components/orderItem.js';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -139,7 +140,7 @@ export default function Home() {
               isConnected={isConnected}
             ></Orders>
           )}
-          {selection === 'MENU' && <div>MENU</div>}
+          {selection === 'MENU' && <Menu restaurant_id={restaurantInfo._id} />}
           {selection === 'PAGAMENTI' && <div>LINK AI PAGAMENTI STRIPE</div>}
           {selection === 'STATISTICHE' && <div>STATISTICHE</div>}
           {selection === 'SETTINGS' && <div>IMPOSTAZIE</div>}
