@@ -27,7 +27,6 @@ export default function Menu({ restaurant_id }) {
       .then((res) => res.json())
       .then(
         (result) => {
-          console.log(result);
           setIsLoaded(true);
           setMenu(result);
         },
