@@ -11,7 +11,9 @@ export default async (req, res) => {
   const newFood = new Food({
     name: food.name,
     price: food.price,
+    description: food.description,
     restaurant_id: food.restaurant_id,
+    category: food.category,
     vegan: food.vegan,
     gluten_free: food.gluten_free,
     lactose_free: food.lactose_free,
