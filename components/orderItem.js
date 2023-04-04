@@ -41,7 +41,7 @@ export default function OrderItem({ order }) {
     ordered_food.forEach((item) => {
       item = normalizeFood(item);
       const index = modifiedList.findIndex(
-        (cartItem) => cartItem._id === item._id
+        (cartItem) => cartItem._id === item?._id
       );
       if (index === -1) {
         modifiedList.push({ ...item, quantity: 1 });
