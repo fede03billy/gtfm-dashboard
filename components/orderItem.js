@@ -9,6 +9,7 @@ export default function OrderItem({ order }) {
   const total_price = order.total_price;
   const paid = order.paid;
   const order_id = order._id;
+  const note = order.note;
 
   async function deliveredOrder() {
     const res = await fetch(`/api/order/delivered/${order_id}`);
@@ -71,6 +72,9 @@ export default function OrderItem({ order }) {
                 </div>
               );
             })}
+          <div className="note">
+            {note && <div className="text-black opacity-30">Note: {note}</div>}
+          </div>
         </div>
         <div className="text-lg font-bold">
           € {(total_price / 100).toFixed(2)}
