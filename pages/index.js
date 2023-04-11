@@ -10,6 +10,7 @@ import { useState } from 'react';
 import hider from 'simple-hider';
 import { Dialog } from '@headlessui/react';
 import { usePopup, usePopupUpdate } from '../components/popupContext';
+import { useOrders, useOrdersUpdate } from '../components/ordersContext';
 import { useTable } from '../components/popupContext';
 import { io } from 'socket.io-client';
 import { getCookie, hasCookie } from 'cookies-next'; // does this work only on node 18?
@@ -21,25 +22,15 @@ export default function Home() {
   const isOpen = usePopup(); // this one starts at undefined instead of false
   const togglePopup = usePopupUpdate(); // this one is a function that will toggle the isOpen state
   const table = useTable();
-  const [orders, setOrders] = useState(null); // Array of orders that must be updated in real time.
+  const orders = useOrders();
+  const { refreshOrders } = useOrdersUpdate();
   const [isConnected, setIsConnected] = useState(false); // this state will be used to show the ws connection status
   let socket;
 
   async function getOrders() {
     // call api to get the orders for the specific restaurant
     if (!restaurantInfo) return;
-    console.info('Sto recuperando gli ordini...');
-    await fetch(`/api/order/${restaurantInfo._id}`).then((res) => {
-      if (res.ok) {
-        res.json().then((data) => {
-          setOrders(data);
-          console.info('Ordini recuperati con successo.');
-          return data;
-        });
-      } else {
-        console.error('error');
-      }
-    });
+    await refreshOrders(restaurantInfo._id);
   }
 
   const socketInitializer = async () => {
@@ -53,7 +44,7 @@ export default function Home() {
       setIsConnected(true);
       socket.on('change', (data) => {
         // console.log('Evento registrato: ', data.operationType);
-        getOrders();
+        getOrders(); // this is debounced in the order context
         socket.emit('event-received');
       });
       socket.on('reconnect_attempt', () => {

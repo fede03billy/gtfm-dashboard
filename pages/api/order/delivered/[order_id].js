@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   try {
     const { order_id } = req.query;
 
-    await Order.findByIdAndUpdate(order_id, {
+    const data = await Order.findByIdAndUpdate(order_id, {
       delivered: true,
     });
 
@@ -17,6 +17,7 @@ export default async function handler(req, res) {
       message: 'Ordini segnati come consegnati.',
       status: 200,
       success: true,
+      data,
     });
   } catch (error) {
     console.error(error);

@@ -3,6 +3,7 @@
 // Path: components/orderItem.js
 
 import normalizeFood from '../util/normalizeFood';
+import { useOrdersUpdate } from './ordersContext';
 
 export default function OrderItem({ order }) {
   const ordered_food = order.ordered_food;
@@ -10,11 +11,13 @@ export default function OrderItem({ order }) {
   const paid = order.paid;
   const order_id = order._id;
   const note = order.note;
+  const { updateOrder, completeOrder } = useOrdersUpdate();
 
   async function deliveredOrder() {
     const res = await fetch(`/api/order/delivered/${order_id}`);
     const data = await res.json();
     if (data.success) {
+      updateOrder(order_id, 'delivered');
       console.info('Ordine contrassegnato come consegnato.');
     }
   }
@@ -23,6 +26,7 @@ export default function OrderItem({ order }) {
     const res = await fetch(`/api/order/paid/${order_id}`);
     const data = await res.json();
     if (data.success) {
+      updateOrder(order_id, 'paid');
       console.info('Ordine contrassegnato come pagato.');
     }
   }
@@ -31,6 +35,8 @@ export default function OrderItem({ order }) {
     const res = await fetch(`/api/order/done/${order_id}`);
     const data = await res.json();
     if (data.success) {
+      updateOrder(order_id, 'done');
+      completeOrder(order_id);
       console.info('Ordine contrassegnato come completato.');
     }
   }
