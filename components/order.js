@@ -46,9 +46,9 @@ export default function Orders({ tables, orders, isConnected }) {
   return (
     <>
       {orders && (
-        <div className="flex flex-row absolute top-0 right-0 max-h-16 overflow-hidden">
+        <div className="flex flex-row absolute top-0 right-0 max-h-16 overflow-hidden bg-sky-300 shadow rounded-bl-md">
           <button
-            className="rounded bg-gray-500 text-xs m-2 p-2 text-white"
+            className="rounded bg-sky-500 hover:bg-sky-600 text-xs m-2 p-2 text-white"
             onClick={toggleSwitchView}
           >
             Cambia visuale
@@ -58,7 +58,7 @@ export default function Orders({ tables, orders, isConnected }) {
           <ConnectionStatus status={isConnected} />
         </div>
       )}
-      <div className="flex flex-row flex-wrap p-20 h-full">
+      <div className="flex flex-row flex-wrap p-20 h-full overflow-hidden overflow-y-auto">
         {!switchView ? (
           tables &&
           tables.map((table) => {

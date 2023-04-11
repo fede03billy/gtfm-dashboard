@@ -9,7 +9,7 @@ export default function Delivered({ orders }) {
     }
   });
   return (
-    <div className="flex justify-center items-center p-2 border text-xs">
+    <div className="flex justify-center items-center p-2 text-xs">
       Consegnati: {deliveredOrders}/{totalOrders}
     </div>
   );

@@ -12,12 +12,12 @@ export default function ConnectionStatus({ status }) {
   // function to add the class with border green or red depending on the status and removing other border colors
   function addClass(div) {
     if (status) {
-      div.classList.remove('border-red-500');
-      return 'border-green-500';
+      div.classList.remove('bg-red-500');
+      return 'bg-green-500';
     }
     if (!status) {
-      div.classList.remove('border-green-500');
-      return 'border-red-500';
+      div.classList.remove('bg-green-500');
+      return 'bg-red-500';
     }
   }
 
@@ -28,7 +28,7 @@ export default function ConnectionStatus({ status }) {
   }, [status]);
 
   return (
-    <div className="flex justify-center items-center p-2 connection-status border">
+    <div className="flex justify-center items-center p-2">
       {/* <div className="connection-status__icon">
             {isConnected ? (
             <img src="/connected.svg" alt="connected" />
@@ -36,9 +36,12 @@ export default function ConnectionStatus({ status }) {
             <img src="/disconnected.svg" alt="disconnected" />
             )}
         </div> */}
-      <div className="text-xs " onClick={reloadPage}>
+      <button
+        className="text-xs  px-4 py-2 h-8 my-auto connection-status rounded bg-red-500"
+        onClick={reloadPage}
+      >
         {status ? 'Connesso' : 'Disconnesso'}
-      </div>
+      </button>
     </div>
   );
 }
