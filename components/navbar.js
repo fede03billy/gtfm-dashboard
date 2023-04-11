@@ -7,23 +7,41 @@ export default function Navbar({ setter }) {
   }
 
   return (
-    <div className="h-screen bg-gray-800">
-      <div className="flex flex-col px-3 py-5">
-        <div className="text-xl text-gray-500" onClick={handleClick}>
+    <div className="h-screen bg-sky-800 overflow-hidden min-w-xs">
+      <div className="flex flex-col p-4 font-light">
+        <button
+          className="text-lg bg-sky-500 rounded mb-4 px-4 py-2 hover:bg-sky-600 text-white disabled:opacity-30"
+          onClick={handleClick}
+        >
           ORDINI
-        </div>
-        <div className="text-xl text-gray-500" onClick={handleClick}>
+        </button>
+        <button
+          className="text-lg bg-sky-500 rounded mb-4 px-4 py-2 hover:bg-sky-600 text-white disabled:opacity-30"
+          onClick={handleClick}
+        >
           MENU
-        </div>
-        <div className="text-xl text-gray-500" onClick={handleClick}>
+        </button>
+        <button
+          className="text-lg bg-sky-500 rounded mb-4 px-4 py-2 hover:bg-sky-600 text-white disabled:opacity-30"
+          onClick={handleClick}
+          disabled
+        >
           PAGAMENTI
-        </div>
-        <div className="text-xl text-gray-500" onClick={handleClick}>
+        </button>
+        <button
+          className="text-lg bg-sky-500 rounded mb-4 px-4 py-2 hover:bg-sky-600 text-white disabled:opacity-30"
+          onClick={handleClick}
+          disabled
+        >
           STATISTICHE
-        </div>
-        <div className="text-xl text-gray-500" onClick={handleClick}>
+        </button>
+        <button
+          className="text-lg bg-sky-500 rounded mb-4 px-4 py-2 hover:bg-sky-600 text-white disabled:opacity-30"
+          onClick={handleClick}
+          disabled
+        >
           SETTINGS
-        </div>
+        </button>
       </div>
     </div>
   );
