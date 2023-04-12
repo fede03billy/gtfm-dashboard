@@ -1,6 +1,7 @@
 // this is a component that will take as props the number of tables for the specific restaurant and render table components for each table
 
 import React from 'react';
+import Image from 'next/image';
 import Table from './table';
 import Delivered from './delivered.js';
 import Paid from './paid.js';
@@ -73,10 +74,20 @@ export default function Orders({ tables, orders, isConnected }) {
             {orders &&
               orders.map((order) => {
                 return (
-                  <>
-                    <div>{order.table_id}</div>
+                  <div className="bg-sky-300 w-full flex flex-row p-4 mb-4 rounded-md min-h-28 shadow">
+                    <div className="p-4 flex flex-row items-center aspect-square h-14 justify-center bg-sky-200 rounded-md shadow mr-4">
+                      <Image
+                        src="https://www.svgrepo.com/show/490390/table.svg"
+                        alt="table"
+                        width={15}
+                        height={15}
+                      />
+                      <div className="ml-2 font-semibold text-lg">
+                        {order.table_id}
+                      </div>
+                    </div>
                     <OrderItem key={order._id} order={order} />
-                  </>
+                  </div>
                 );
               })}
           </>
