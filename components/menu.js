@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Image from 'next/image';
 import { Dialog } from '@headlessui/react';
 
 export default function Menu({ restaurant_id }) {
@@ -139,117 +140,129 @@ export default function Menu({ restaurant_id }) {
         className="relative z-50"
       >
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/[0.4]">
-          <Dialog.Panel className="w-full max-w-4xl rounded bg-gray-200 p-4">
-            <Dialog.Title>Aggiungi un nuovo piatto al menù</Dialog.Title>
-            <Dialog.Description>Seleziona le cose</Dialog.Description>
-            <div className="max-w-2xl bg-gray-200 rounded shadow-sm p-4">
-              <form
-                className="flex flex-col"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const name = e.target.name.value;
-                  const price = e.target.price.value;
-                  const description = e.target.description.value;
-                  const category = e.target.category.value;
-                  const vegan = e.target.vegan.checked;
-                  const gluten_free = e.target.gluten_free.checked;
-                  const lactose_free = e.target.lactose_free.checked;
-                  const spicy = e.target.spicy.checked;
-                  const food = {
-                    name,
-                    price,
-                    description,
-                    category,
-                    restaurant_id,
-                    vegan,
-                    gluten_free,
-                    lactose_free,
-                    spicy,
-                  };
-                  fetch('/api/restaurant/menu/add', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
+          <Dialog.Panel className="w-full max-w-4xl rounded bg-sky-50 p-4 relative">
+            <Dialog.Title className="text-center font-bold">
+              Aggiungi un nuovo piatto al menù
+            </Dialog.Title>
+            <Dialog.Description className="mb-4 mt-2 text-black text-opacity-30 text-xs font-thin text-center">
+              Inserisci i dati del piatto e clicca su "Aggiungi"
+            </Dialog.Description>
+            <form
+              className="flex flex-col"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const name = e.target.name.value;
+                const price = e.target.price.value;
+                const description = e.target.description.value;
+                const category = e.target.category.value;
+                const vegan = e.target.vegan.checked;
+                const gluten_free = e.target.gluten_free.checked;
+                const lactose_free = e.target.lactose_free.checked;
+                const spicy = e.target.spicy.checked;
+                const food = {
+                  name,
+                  price,
+                  description,
+                  category,
+                  restaurant_id,
+                  vegan,
+                  gluten_free,
+                  lactose_free,
+                  spicy,
+                };
+                fetch('/api/restaurant/menu/add', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ food }),
+                })
+                  .then((res) => res.json())
+                  .then(
+                    (result) => {
+                      setIsLoaded(true);
+                      setMenu(result);
                     },
-                    body: JSON.stringify({ food }),
-                  })
-                    .then((res) => res.json())
-                    .then(
-                      (result) => {
-                        setIsLoaded(true);
-                        setMenu(result);
-                      },
-                      (error) => {
-                        setIsLoaded(true);
-                        setError(error);
-                      }
-                    );
-                }}
+                    (error) => {
+                      setIsLoaded(true);
+                      setError(error);
+                    }
+                  );
+              }}
+            >
+              <label htmlFor="name">Nome</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="text"
+                name="name"
+                id="name"
+              />
+              <label htmlFor="price">Prezzo</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="number"
+                name="price"
+                id="price"
+              />
+              <label htmlFor="description">Descrizione</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="text"
+                name="description"
+                id="description"
+              />
+              <label htmlFor="category">Categoria</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="text"
+                name="category"
+                id="category"
+              />
+              <label htmlFor="vegan">Vegano</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="checkbox"
+                name="vegan"
+                id="vegan"
+              />
+              <label htmlFor="gluten_free">Senza glutine</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="checkbox"
+                name="gluten_free"
+                id="gluten_free"
+              />
+              <label htmlFor="lactose_free">Senza lattosio</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="checkbox"
+                name="lactose_free"
+                id="lactose_free"
+              />
+              <label htmlFor="spicy">Piccante</label>
+              <input
+                className="border rounded border-gray-900 py-2 px-4"
+                type="checkbox"
+                name="spicy"
+                id="spicy"
+              />
+              <button
+                className="border rounded border-gray-900 hover:bg-gray-300 py-2 px-4 mt-4 max-w-xs"
+                type="submit"
               >
-                <label htmlFor="name">Nome</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="text"
-                  name="name"
-                  id="name"
-                />
-                <label htmlFor="price">Prezzo</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="number"
-                  name="price"
-                  id="price"
-                />
-                <label htmlFor="description">Descrizione</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="text"
-                  name="description"
-                  id="description"
-                />
-                <label htmlFor="category">Categoria</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="text"
-                  name="category"
-                  id="category"
-                />
-                <label htmlFor="vegan">Vegano</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="checkbox"
-                  name="vegan"
-                  id="vegan"
-                />
-                <label htmlFor="gluten_free">Senza glutine</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="checkbox"
-                  name="gluten_free"
-                  id="gluten_free"
-                />
-                <label htmlFor="lactose_free">Senza lattosio</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="checkbox"
-                  name="lactose_free"
-                  id="lactose_free"
-                />
-                <label htmlFor="spicy">Piccante</label>
-                <input
-                  className="border rounded border-gray-900 py-2 px-4"
-                  type="checkbox"
-                  name="spicy"
-                  id="spicy"
-                />
-                <button
-                  className="border rounded border-gray-900 hover:bg-gray-300 py-2 px-4 mt-4"
-                  type="submit"
-                >
-                  Aggiungi
-                </button>
-              </form>
-            </div>
+                Aggiungi
+              </button>
+            </form>
+            <button
+              onClick={() => setIsDialogOpen(!isDialogOpen)}
+              className="bg-sky-100 aspect-square p-2 rounded shadow hover:bg-sky-200 max-w-xs absolute top-4 right-4"
+            >
+              <Image
+                src="https://www.svgrepo.com/show/500512/close-bold.svg"
+                width={20}
+                height={20}
+              />
+            </button>
           </Dialog.Panel>
         </div>
       </Dialog>

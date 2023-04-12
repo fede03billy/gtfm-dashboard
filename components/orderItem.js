@@ -3,6 +3,7 @@
 // Path: components/orderItem.js
 
 import normalizeFood from '../util/normalizeFood';
+import Image from 'next/image';
 import { useOrdersUpdate } from './ordersContext';
 
 export default function OrderItem({ order }) {
@@ -61,10 +62,17 @@ export default function OrderItem({ order }) {
   const modifiedList = prepareOrder(ordered_food);
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-md shadow-md my-2">
+    <div className="flex flex-col w-full bg-sky-100 rounded-md shadow-md">
       <div className="flex flex-row justify-between p-5 w-full">
-        <div className="timestamp max-h-20 aspect-square">
-          {new Date(order.created_at).toLocaleString()}
+        <div
+          className="timestamp max-h-14 aspect-square text-black text-opacity-30"
+          title={new Date(order.created_at).toLocaleString()}
+        >
+          {new Date(order.created_at).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })}
         </div>
         <div className="flex flex-col">
           {ordered_food &&
@@ -73,8 +81,12 @@ export default function OrderItem({ order }) {
               // food = normalizeFood(food);
               return (
                 <div key={i} className="flex flex-col justify-between">
-                  {food?.name} - {food?.quantity} - €{' '}
-                  {((food?.quantity * food?.price) / 100).toFixed(2)}
+                  <div className="inline-block">
+                    {food?.name}
+                    <span className="text-lg text-black text-opacity-30 ml-2">
+                      x{food?.quantity}
+                    </span>
+                  </div>
                 </div>
               );
             })}
@@ -86,11 +98,21 @@ export default function OrderItem({ order }) {
           € {(total_price / 100).toFixed(2)}
         </div>
         <div className="status text-sm text-gray-500">
-          {order.delivered
-            ? paid
-              ? 'Pagato'
-              : 'Non pagato'
-            : 'Non consegnato'}
+          {order.delivered ? (
+            paid ? (
+              <div className="rounded-full bg-green-200 py-1 px-2 text-xs">
+                Completo
+              </div>
+            ) : (
+              <div className="rounded-full bg-yellow-200 py-1 px-2 text-xs">
+                Da pagare
+              </div>
+            )
+          ) : (
+            <div className="rounded-full bg-red-200 py-1 px-2 text-xs">
+              Da consegnare
+            </div>
+          )}
           {/* TODO: change the text status with a colored dot */}
         </div>
         <div className="flex gap-4 justify-center">
@@ -98,22 +120,40 @@ export default function OrderItem({ order }) {
           <button
             onClick={deliveredOrder}
             disabled={order.delivered}
-            className="w-xs max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4 aspect-square max-h-20"
+            className="w-14 rounded-md bg-sky-200 py-2 px-4 aspect-square h-14"
           >
-            Segna come consegnato
+            <Image
+              src="https://www.svgrepo.com/show/482320/room-service-1.svg"
+              width={25}
+              height={25}
+              alt="Segna l'ordine come consegnato al tavolo"
+              title="Segna l'ordine come consegnato al tavolo"
+            />
           </button>
           <button
             onClick={paidOrder}
             disabled={paid}
-            className="w-xs max-h-xs max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4 aspect-square max-h-20"
+            className="w-14 rounded-md bg-sky-200 py-2 px-4 aspect-square h-14"
           >
-            Segna come pagato
+            <Image
+              src="https://www.svgrepo.com/show/390121/creadit-card-debit-hand-pay.svg"
+              width={25}
+              height={25}
+              alt="Segna l'ordine come pagato"
+              title="Segna l'ordine come pagato"
+            />
           </button>
           <button
             onClick={completedOrder}
-            className="w-xs max-w-xs text-sm text-gray-100 rounded-md bg-slate-500 py-2 px-4 aspect-square max-h-20"
+            className="w-14 rounded-md bg-sky-200 py-2 px-4 aspect-square h-14"
           >
-            Segna come completato
+            <Image
+              src="https://www.svgrepo.com/show/362783/hand-waving-bold.svg"
+              width={25}
+              height={25}
+              alt="Segna l'ordine come completato e libera il tavolo"
+              title="Segna l'ordine come completato e libera il tavolo"
+            />
           </button>
         </div>
       </div>

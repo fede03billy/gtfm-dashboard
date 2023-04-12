@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Image from 'next/image';
 import styles from '@/styles/Home.module.css';
 import Navbar from '../components/navbar';
 import Orders from '../components/order';
@@ -142,23 +143,33 @@ export default function Home() {
           className="relative z-50"
         >
           <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/[0.4]">
-            <Dialog.Panel className="w-full max-w-4xl rounded bg-gray-200 p-4">
-              <Dialog.Title>Ordine del tavolo {table}</Dialog.Title>
-              <Dialog.Description>
-                Ecco cosa è stato ordinato:
+            <Dialog.Panel className="w-full max-w-4xl rounded bg-sky-50 p-4 relative">
+              <Dialog.Title className="font-bold text-center">
+                Tavolo {table}
+              </Dialog.Title>
+              <Dialog.Description className="mb-4 text-black text-opacity-30 text-xs font-thin text-center">
+                Visualizza gli ordini del tavolo {table}.
               </Dialog.Description>
               <div className="overflow-y-auto" style={{ maxHeight: '70vh' }}>
                 {orders &&
                   orders.map((order, i) => {
                     if (order.table_id !== table) return;
-                    return <OrderItem key={i} order={order} />;
+                    return (
+                      <div className="mb-4">
+                        <OrderItem key={i} order={order} />
+                      </div>
+                    );
                   })}
               </div>
               <button
                 onClick={() => togglePopup()}
-                className="bg-gray-300 py-2 px-4 rounded shadow hover:bg-gray-400 mr-1 w-full max-w-xs"
+                className="bg-sky-100 aspect-square p-2 rounded shadow hover:bg-sky-200 max-w-xs absolute top-4 right-4"
               >
-                Chiudi
+                <Image
+                  src="https://www.svgrepo.com/show/500512/close-bold.svg"
+                  width={20}
+                  height={20}
+                />
               </button>
             </Dialog.Panel>
           </div>
