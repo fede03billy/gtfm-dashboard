@@ -10,6 +10,12 @@ export default function Menu({ restaurant_id }) {
   const [error, setError] = React.useState(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
+  const spicy =
+    'https://www.svgrepo.com/show/383337/vegetable-food-pepper-chilli-spicy.svg';
+  const vegan = 'https://www.svgrepo.com/show/510319/vegan.svg';
+  const lactoseFree = 'https://www.svgrepo.com/show/509875/dairy-free.svg';
+  const glutenFree = 'https://www.svgrepo.com/show/509969/gluten-free.svg';
+
   function deleteItem(id) {
     fetch(`/api/restaurant/menu/delete/${id}`, {
       method: 'DELETE',
@@ -140,7 +146,7 @@ export default function Menu({ restaurant_id }) {
         className="relative z-50"
       >
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/[0.4]">
-          <Dialog.Panel className="w-full max-w-4xl rounded bg-sky-50 p-4 relative">
+          <Dialog.Panel className="w-96 rounded bg-sky-50 p-4 relative flex flex-col items-center">
             <Dialog.Title className="text-center font-bold">
               Aggiungi un nuovo piatto al menù
             </Dialog.Title>
@@ -148,9 +154,18 @@ export default function Menu({ restaurant_id }) {
               Inserisci i dati del piatto e clicca su "Aggiungi"
             </Dialog.Description>
             <form
-              className="flex flex-col"
+              className="flex flex-col gap-4 w-full items-left"
               onSubmit={(e) => {
                 e.preventDefault();
+                if (
+                  !e.target.name.value ||
+                  !e.target.price.value ||
+                  !e.target.description.value ||
+                  !e.target.category.value
+                ) {
+                  alert('Mancano dei dati.');
+                  return;
+                }
                 const name = e.target.name.value;
                 const price = e.target.price.value;
                 const description = e.target.description.value;
@@ -190,64 +205,105 @@ export default function Menu({ restaurant_id }) {
                   );
               }}
             >
-              <label htmlFor="name">Nome</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="text"
-                name="name"
-                id="name"
-              />
-              <label htmlFor="price">Prezzo</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="number"
-                name="price"
-                id="price"
-              />
-              <label htmlFor="description">Descrizione</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="text"
-                name="description"
-                id="description"
-              />
-              <label htmlFor="category">Categoria</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="text"
-                name="category"
-                id="category"
-              />
-              <label htmlFor="vegan">Vegano</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="checkbox"
-                name="vegan"
-                id="vegan"
-              />
-              <label htmlFor="gluten_free">Senza glutine</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="checkbox"
-                name="gluten_free"
-                id="gluten_free"
-              />
-              <label htmlFor="lactose_free">Senza lattosio</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="checkbox"
-                name="lactose_free"
-                id="lactose_free"
-              />
-              <label htmlFor="spicy">Piccante</label>
-              <input
-                className="border rounded border-gray-900 py-2 px-4"
-                type="checkbox"
-                name="spicy"
-                id="spicy"
-              />
+              <div className="flex justify-between items-center">
+                <label htmlFor="name">Nome</label>
+                <input
+                  className="border rounded border-gray-900 py-2 px-4 ml-auto"
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder='es. "Pizza Margherita"'
+                />
+              </div>
+              <div className="flex justify-between items-center">
+                <label htmlFor="price">Prezzo</label>
+                <input
+                  className="border rounded border-gray-900 py-2 px-4"
+                  type="number"
+                  name="price"
+                  min={0}
+                  id="price"
+                  placeholder='es. "550"'
+                />
+              </div>
+              <div className="flex justify-between items-center">
+                <label htmlFor="description">Descrizione</label>
+                <input
+                  className="border rounded border-gray-900 py-2 px-4"
+                  type="text"
+                  name="description"
+                  id="description"
+                  placeholder='es. "Pizza con pomodoro, mozzarella e basilico"'
+                />
+              </div>
+              <div className="flex justify-between items-center">
+                <label htmlFor="category">Categoria</label>
+                <input
+                  className="border rounded border-gray-900 py-2 px-4"
+                  type="text"
+                  name="category"
+                  id="category"
+                  placeholder='es. "Primi"'
+                />
+              </div>
+              <div className="flex flex-row mt-2 mx-auto">
+                <div className="flex flex-row">
+                  <label className="mr-2" htmlFor="vegan">
+                    <Image src={vegan} width={20} height={20} title="vegan" />
+                  </label>
+                  <input
+                    className="border rounded border-gray-900 py-2 px-4"
+                    type="checkbox"
+                    name="vegan"
+                    id="vegan"
+                  />
+                </div>
+                <div className="flex flex-row">
+                  <label className="mr-2 ml-6" htmlFor="gluten_free">
+                    <Image
+                      src={glutenFree}
+                      width={20}
+                      height={20}
+                      title="gluten free"
+                    />
+                  </label>
+                  <input
+                    className="border rounded border-gray-900 py-2 px-4"
+                    type="checkbox"
+                    name="gluten_free"
+                    id="gluten_free"
+                  />
+                </div>
+                <div className="flex flex-row">
+                  <label className="mr-2 ml-6" htmlFor="lactose_free">
+                    <Image
+                      src={lactoseFree}
+                      width={20}
+                      height={20}
+                      title="lactose free"
+                    />
+                  </label>
+                  <input
+                    className="border rounded border-gray-900 py-2 px-4"
+                    type="checkbox"
+                    name="lactose_free"
+                    id="lactose_free"
+                  />
+                </div>
+                <div className="flex flex-row">
+                  <label className="mr-2 ml-6" htmlFor="spicy">
+                    <Image src={spicy} width={20} height={20} title="spicy" />
+                  </label>
+                  <input
+                    className="border rounded border-gray-900 py-2 px-4"
+                    type="checkbox"
+                    name="spicy"
+                    id="spicy"
+                  />
+                </div>
+              </div>
               <button
-                className="border rounded border-gray-900 hover:bg-gray-300 py-2 px-4 mt-4 max-w-xs"
+                className="rounded shadow bg-sky-300 hover:bg-sky-400 py-2 px-4 mt-4"
                 type="submit"
               >
                 Aggiungi
