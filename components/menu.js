@@ -1,8 +1,7 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { Dialog } from '@headlessui/react';
 import Loading from './loading.js';
-import { set } from 'mongoose';
 
 export default function Menu({ restaurant_id }) {
   const [menu, setMenu] = React.useState([]);
