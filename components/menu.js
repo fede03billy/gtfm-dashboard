@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import Image from 'next/image';
 import { Dialog } from '@headlessui/react';
+import Loading from './loading.js';
+import { set } from 'mongoose';
 
 export default function Menu({ restaurant_id }) {
   const [menu, setMenu] = React.useState([]);
@@ -69,8 +71,9 @@ export default function Menu({ restaurant_id }) {
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
+
   return (
     <div className="p-4">
       <div className="mb-4 mt-[-16px] mx-[-16px] sticky top-0 left-0 bg-sky-200 p-4 shadow">
@@ -107,38 +110,39 @@ export default function Menu({ restaurant_id }) {
         </div>
       </div>
       <ul>
-        {menu.length && currentCategory === 'Tutto'
-          ? menu.map((item) => (
-              <li
-                className="bg-gray-200 rounded p-4 w-fit shadow-sm mb-4"
-                key={item._id}
-              >
-                {item.name} - {(item.price / 100).toFixed(2)}€
-                <button
-                  className="border rounded border-gray-900 hover:bg-gray-300 py-2 px-4 ml-4"
-                  onClick={() => deleteItem(item._id)}
+        {menu.length > 0 &&
+          (currentCategory === 'Tutto'
+            ? menu.map((item) => (
+                <li
+                  className="bg-gray-200 rounded p-4 w-fit shadow-sm mb-4"
+                  key={item._id}
                 >
-                  Elimina
-                </button>
-              </li>
-            ))
-          : menu.map(
-              (item) =>
-                item.category === currentCategory && (
-                  <li
-                    className="bg-gray-200 rounded p-4 w-fit shadow-sm mb-4"
-                    key={item._id}
+                  {item.name} - {(item.price / 100).toFixed(2)}€
+                  <button
+                    className="border rounded border-gray-900 hover:bg-gray-300 py-2 px-4 ml-4"
+                    onClick={() => deleteItem(item._id)}
                   >
-                    {item.name} - {(item.price / 100).toFixed(2)}€
-                    <button
-                      className="border rounded border-gray-900 hover:bg-gray-300 py-2 px-4 ml-4"
-                      onClick={() => deleteItem(item._id)}
+                    Elimina
+                  </button>
+                </li>
+              ))
+            : menu.map(
+                (item) =>
+                  item.category === currentCategory && (
+                    <li
+                      className="bg-gray-200 rounded p-4 w-fit shadow-sm mb-4"
+                      key={item._id}
                     >
-                      Elimina
-                    </button>
-                  </li>
-                )
-            )}
+                      {item.name} - {(item.price / 100).toFixed(2)}€
+                      <button
+                        className="border rounded border-gray-900 hover:bg-gray-300 py-2 px-4 ml-4"
+                        onClick={() => deleteItem(item._id)}
+                      >
+                        Elimina
+                      </button>
+                    </li>
+                  )
+              ))}
       </ul>
       <Dialog
         open={isDialogOpen}
@@ -196,6 +200,7 @@ export default function Menu({ restaurant_id }) {
                   .then(
                     (result) => {
                       setIsLoaded(true);
+                      setIsDialogOpen(false);
                       setMenu(result);
                     },
                     (error) => {
